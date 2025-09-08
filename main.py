@@ -10,7 +10,7 @@ page_bg = """
 <style>
 .stApp {
     background: linear-gradient(135deg, #1e3c72, #2a5298, #6dd5ed);
-    background-attachment: fixed;
+    background-attachment: fixed;  
     color: white;    
 }
 
