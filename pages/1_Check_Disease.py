@@ -1,10 +1,6 @@
 import streamlit as st
 import data_1
 
-@st.cache_resource
-def load_model():
-    return data_1.Data_1()
-
 st.title("Check if you have 'Diabetes' or Not")
 
 glucose = st.number_input("Glucose")
@@ -20,11 +16,9 @@ height = st.number_input("Enter you height (cm)")
 BMI = weight / ((height/100) ** 2) if height > 0 else 0
 st.write(f"Calculated BMI: {BMI:.2f}")
 
-model_object = load_model()
-
 if st.button("Check for Diabetes"):
     try:   
-        prediction, probabilities = model_object.predict(
+        model_object = data_1.Data_1(
             pregnancies=pregnancies,
             glucose=glucose,
             bloodPressure=bloodPressure,
@@ -34,6 +28,8 @@ if st.button("Check for Diabetes"):
             diabetesPedigreeFunction=diabetesPedigreeFunction,
             age=age
         )
+        
+        prediction, probabilities = model_object.predict()
         
         if prediction == 1:
             st.error("🔴 High risk of Diabetes")
@@ -45,3 +41,5 @@ if st.button("Check for Diabetes"):
         
     except Exception as e:
         st.error(f"Error: {e}")
+
+  

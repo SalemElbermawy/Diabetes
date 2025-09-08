@@ -1,14 +1,7 @@
-
 import streamlit as st
 from data_2 import Data
 
-@st.cache_resource
-def load_model():
-    return Data()
-
 st.title("🔬 Diabetes A1C Result Prediction")
-
-
 
 race = st.selectbox("Race", ['Caucasian', 'AfricanAmerican', 'Other', 'Asian', 'Hispanic'])
 gender = st.selectbox("Gender", ["Male", "Female"])
@@ -55,30 +48,32 @@ metformin_pioglitazone = st.selectbox("Metformin-pioglitazone", ['No', 'Steady']
 change = st.selectbox("Change", ['No', 'Ch'])
 diabetesMed = st.selectbox("DiabetesMed", ['No', 'Yes'])
 readmitted = st.selectbox("Readmitted", ['NO', '>30', '<30'])
-# تحميل النموذج مسبقاً
-model_object = load_model()
 
-if st.button("🔍 Predict A1C Result"):
-    try:
-        prediction = model_object.predict(
-            race, gender, age, time_in_hospital, num_lab_procedures,
-            num_procedures, num_medications, number_outpatient,
-            number_emergency, number_inpatient, number_diagnoses,
-            max_glu_serum, metformin, repaglinide, nateglinide,
-            chlorpropamide, glimepiride, acetohexamide, glipizide,
-            glyburide, tolbutamide, pioglitazone, rosiglitazone, acarbose,
-            miglitol, troglitazone, tolazamide, examide, citoglipton,
-            insulin, glyburide_metformin, glipizide_metformin,
-            glimepiride_pioglitazone, metformin_rosiglitazone,
-            metformin_pioglitazone, change, diabetesMed, readmitted
-        )
+with st.spinner("Wait Prediction ....."):
 
-        if prediction < 6:
-            st.success(f"🟢 Prediction: {prediction:.2f} → Normal")
-        elif 6 <= prediction < 8:
-            st.warning(f"🟠 Prediction: {prediction:.2f} → Medium Risk")
-        else:
-            st.error(f"🔴 Prediction: {prediction:.2f} → High Risk")
+    if st.button("🔍 Predict A1C Result"):
+        try:
+            model_object = Data(
+                race, gender, age, time_in_hospital, num_lab_procedures,
+                num_procedures, num_medications, number_outpatient,
+                number_emergency, number_inpatient, number_diagnoses,
+                max_glu_serum, metformin, repaglinide, nateglinide,
+                chlorpropamide, glimepiride, acetohexamide, glipizide,
+                glyburide, tolbutamide, pioglitazone, rosiglitazone, acarbose,
+                miglitol, troglitazone, tolazamide, examide, citoglipton,
+                insulin, glyburide_metformin, glipizide_metformin,
+                glimepiride_pioglitazone, metformin_rosiglitazone,
+                metformin_pioglitazone, change, diabetesMed, readmitted
+            )
 
-    except Exception as e:
-        st.error(f"Error: {e}")
+            prediction = model_object.predict()
+
+            if prediction < 6:
+                st.success(f"🟢 Prediction: {prediction:.2f} → Normal")
+            elif 6 <= prediction < 8:
+                st.warning(f"🟠 Prediction: {prediction:.2f} → Medium Risk")
+            else:
+                st.error(f"🔴 Prediction: {prediction:.2f} → High Risk")
+
+        except Exception as e:
+            st.error(f"Error: {e}")

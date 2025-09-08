@@ -3,20 +3,21 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import xgboost as xgb
-import joblib
-import os
 
 class Data_1:
     
-    def __init__(self):  
-        model_path = "xgb_model_diabetes.pkl"
+    def __init__(self, pregnancies, glucose, bloodPressure, skinThickness, 
+                 insulin, BMI, diabetesPedigreeFunction, age):  
         
-        if os.path.exists(model_path):
-            self.xgb_model = joblib.load(model_path)
-        else:
-            self.train_and_save_model(model_path)
-    
-    def train_and_save_model(self, model_path):
+        self.pregnancies = pregnancies
+        self.glucose = glucose
+        self.bloodPressure = bloodPressure
+        self.skinThickness = skinThickness
+        self.insulin = insulin
+        self.BMI = BMI
+        self.diabetesPedigreeFunction = diabetesPedigreeFunction
+        self.age = age
+        
         data = pd.read_csv("diabetes.csv")
         target = data["Outcome"]     
         data = data.drop("Outcome", axis="columns")
@@ -38,20 +39,17 @@ class Data_1:
         )
 
         self.xgb_model.fit(train_data, train_target)
-        joblib.dump(self.xgb_model, model_path)
     
-    def predict(self, pregnancies, glucose, bloodPressure, skinThickness, 
-                insulin, BMI, diabetesPedigreeFunction, age):
-        
+    def predict(self):
         input_data = pd.DataFrame({
-            'Pregnancies': [pregnancies],
-            'Glucose': [glucose],
-            'BloodPressure': [bloodPressure],
-            'SkinThickness': [skinThickness],
-            'Insulin': [insulin],
-            'BMI': [BMI],
-            'DiabetesPedigreeFunction': [diabetesPedigreeFunction],
-            'Age': [age]
+            'Pregnancies': [self.pregnancies],
+            'Glucose': [self.glucose],
+            'BloodPressure': [self.bloodPressure],
+            'SkinThickness': [self.skinThickness],
+            'Insulin': [self.insulin],
+            'BMI': [self.BMI],
+            'DiabetesPedigreeFunction': [self.diabetesPedigreeFunction],
+            'Age': [self.age]
         })
         
         prediction = self.xgb_model.predict(input_data)
